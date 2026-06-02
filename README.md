@@ -1,11 +1,11 @@
 # Demo Trace Replay
 
-Replay LLM request traces against a configurable endpoint for live traffic demos. Powered by Locust.
+Replay LLM conversation traces against a configurable API endpoint for live traffic demos. This is a load generation client — it sends requests to an existing LLM API, it does not host or serve models. Powered by [Locust](https://locust.io).
 
 ## Quick Start
 
 ```bash
-cp config.yaml.example config.yaml   # then edit with your API key
+cp config.yaml.example config.yaml   # edit with your API key and endpoint
 uv pip install -e .
 trace-replay
 ```
@@ -16,7 +16,7 @@ Opens Locust web UI at http://localhost:8089. Default: 1000 conversations from `
 
 ```bash
 # Custom endpoint + model
-trace-replay --endpoint http://my-vllm:8000 --model-override meta-llama/Llama-3-8B
+trace-replay --endpoint https://api.friendli.ai/dedicated --api-key flp_... --model-override my-model
 
 # Local JSONL traces
 trace-replay --dataset file://datasets/example_traces.jsonl --schema openai_messages
@@ -41,65 +41,19 @@ trace-replay --stream
 
 Schemas: `openai_messages`, `sharegpt`, `arena`
 
-Unknown HuggingFace datasets require `--schema`:
-```bash
-trace-replay --dataset huggingface://some/repo --schema sharegpt
-```
-
 ## Configuration
 
-Precedence: CLI args > env vars > `config.yaml` > defaults.
+Precedence: **CLI args > env vars > config.yaml > defaults**
 
-**config.yaml** (copy from `config.yaml.example`)
-```yaml
-endpoint:
-  url: "http://localhost:8000"
-  api_format: "openai"          # openai | anthropic
-  api_key: ""                   # API key for LLM endpoint
+See [`config.yaml.example`](config.yaml.example) for all options with descriptions.
 
-dataset:
-  source: "huggingface://HuggingFaceH4/ultrachat_200k"
-  max_samples: 1000
-  split: "train_sft"
-  hf_token: ""                  # HuggingFace token for gated datasets
-
-request:
-  model_override: ""
-  max_tokens: 256
-  temperature: 0.7
-  stream: false
-
-locust:
-  users: 10
-  spawn_rate: 2
-  run_time: ""
-```
-
-**Environment Variables**
-
-| Variable | Config Key | Example |
-|---|---|---|
-| `TRACE_REPLAY_ENDPOINT_URL` | `endpoint.url` | `http://my-vllm:8000` |
-| `TRACE_REPLAY_API_FORMAT` | `endpoint.api_format` | `openai` |
-| `TRACE_REPLAY_API_KEY` | `endpoint.api_key` | `sk-...` |
-| `TRACE_REPLAY_HF_TOKEN` | `dataset.hf_token` | `hf_...` |
-| `TRACE_REPLAY_DATASET_SOURCE` | `dataset.source` | `huggingface://HuggingFaceH4/ultrachat_200k` |
-| `TRACE_REPLAY_DATASET_MAX_SAMPLES` | `dataset.max_samples` | `1000` |
-| `TRACE_REPLAY_DATASET_SPLIT` | `dataset.split` | `train_sft` |
-| `TRACE_REPLAY_DATASET_SCHEMA` | `dataset.dataset_schema` | `openai_messages` |
-| `TRACE_REPLAY_MODEL_OVERRIDE` | `request.model_override` | `meta-llama/Llama-3-8B` |
-| `TRACE_REPLAY_MAX_TOKENS` | `request.max_tokens` | `256` |
-| `TRACE_REPLAY_TEMPERATURE` | `request.temperature` | `0.7` |
-| `TRACE_REPLAY_STREAM` | `request.stream` | `true` |
-| `TRACE_REPLAY_USERS` | `locust.users` | `10` |
-| `TRACE_REPLAY_SPAWN_RATE` | `locust.spawn_rate` | `2` |
-| `TRACE_REPLAY_RUN_TIME` | `locust.run_time` | `5m` |
+Env var convention: `TRACE_REPLAY_<FIELD>` uppercased (e.g. `TRACE_REPLAY_API_KEY`, `TRACE_REPLAY_HF_TOKEN`).
 
 ## Docker
 
 ```bash
 docker build -t trace-replay .
-docker run -p 8089:8089 trace-replay --endpoint http://host.docker.internal:8000
+docker run -p 8089:8089 trace-replay --endpoint https://api.openai.com --api-key sk-...
 ```
 
 ## JSONL Format

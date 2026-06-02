@@ -5,7 +5,7 @@ RUN pip install --no-cache-dir uv
 WORKDIR /app
 
 COPY pyproject.toml .
-COPY config.yaml .
+COPY config.yaml.example config.yaml
 COPY datasets/ datasets/
 COPY src/ src/
 
