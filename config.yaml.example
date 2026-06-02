@@ -1,7 +1,7 @@
 endpoint:
-  url: "https://api.friendli.ai/dedicated/v1"  # Target LLM endpoint URL
-  api_format: "openai"                          # API format: openai | anthropic
-  api_key: "API_KEY"                            # API key for the LLM endpoint
+  url: "http://localhost:8000"       # Target LLM endpoint URL
+  api_format: "openai"              # API format: openai | anthropic
+  api_key: ""                       # API key for the LLM endpoint
 
 dataset:
   source: "huggingface://HuggingFaceH4/ultrachat_200k"  # Dataset source: huggingface://repo or file://path
@@ -11,7 +11,7 @@ dataset:
   hf_token: ""                      # HuggingFace token for gated/private datasets
 
 request:
-  model_override: "MODEL_ID"        # Override model name in requests (uses trace value if empty)
+  model_override: ""                # Override model name in requests (uses trace value if empty)
   max_tokens: 256                   # Maximum tokens in LLM response
   temperature: 0.7                  # Sampling temperature (0.0–2.0)
   stream: false                     # Enable streaming responses

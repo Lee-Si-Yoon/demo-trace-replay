@@ -17,7 +17,7 @@ _DEFAULT_CONFIG_PATHS = [
 class EndpointConfig(BaseModel):
     url: str = "http://localhost:8000"
     api_format: Literal["openai", "anthropic"] = "openai"
-    api_key_env: str = ""
+    api_key: str = ""
 
 
 class DatasetConfig(BaseModel):
@@ -27,7 +27,7 @@ class DatasetConfig(BaseModel):
     max_samples: int = 1000
     split: str = "train_sft"
     dataset_schema: str = Field(default="", alias="schema")
-    hf_token_env: str = ""
+    hf_token: str = ""
 
 
 class RequestConfig(BaseModel):
@@ -78,12 +78,12 @@ def _apply_env_overrides(raw: dict) -> dict:
     env_map = {
         f"{prefix}ENDPOINT_URL": ("endpoint", "url"),
         f"{prefix}API_FORMAT": ("endpoint", "api_format"),
-        f"{prefix}API_KEY_ENV": ("endpoint", "api_key_env"),
+        f"{prefix}API_KEY": ("endpoint", "api_key"),
         f"{prefix}DATASET_SOURCE": ("dataset", "source"),
         f"{prefix}DATASET_MAX_SAMPLES": ("dataset", "max_samples"),
         f"{prefix}DATASET_SPLIT": ("dataset", "split"),
         f"{prefix}DATASET_SCHEMA": ("dataset", "dataset_schema"),
-        f"{prefix}HF_TOKEN_ENV": ("dataset", "hf_token_env"),
+        f"{prefix}HF_TOKEN": ("dataset", "hf_token"),
         f"{prefix}MODEL_OVERRIDE": ("request", "model_override"),
         f"{prefix}MAX_TOKENS": ("request", "max_tokens"),
         f"{prefix}TEMPERATURE": ("request", "temperature"),
@@ -107,12 +107,12 @@ def apply_cli_overrides(config: AppConfig, **overrides) -> AppConfig:
     mapping = {
         "endpoint_url": ("endpoint", "url"),
         "api_format": ("endpoint", "api_format"),
-        "api_key_env": ("endpoint", "api_key_env"),
+        "api_key": ("endpoint", "api_key"),
         "dataset_source": ("dataset", "source"),
         "max_samples": ("dataset", "max_samples"),
         "split": ("dataset", "split"),
         "schema": ("dataset", "dataset_schema"),
-        "hf_token_env": ("dataset", "hf_token_env"),
+        "hf_token": ("dataset", "hf_token"),
         "model_override": ("request", "model_override"),
         "max_tokens": ("request", "max_tokens"),
         "temperature": ("request", "temperature"),

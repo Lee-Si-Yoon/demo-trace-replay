@@ -39,7 +39,7 @@ def _parse_dataset_source(source: str) -> tuple[str, str | None, str | None]:
 def replay(
     endpoint_url: Optional[str] = typer.Option(None, "--endpoint", help="Target LLM endpoint URL"),
     api_format: Optional[str] = typer.Option(None, "--api-format", help="API format: openai | anthropic"),
-    api_key_env: Optional[str] = typer.Option(None, "--api-key-env", help="Env var name holding API key"),
+    api_key: Optional[str] = typer.Option(None, "--api-key", help="API key for LLM endpoint"),
     dataset_source: Optional[str] = typer.Option(None, "--dataset", help="Dataset source (huggingface://repo or file://path)"),
     max_samples: Optional[int] = typer.Option(None, "--max-samples", help="Max traces to load"),
     split: Optional[str] = typer.Option(None, "--split", help="HF dataset split"),
@@ -63,8 +63,8 @@ def replay(
         overrides["endpoint_url"] = endpoint_url
     if api_format is not None:
         overrides["api_format"] = api_format
-    if api_key_env is not None:
-        overrides["api_key_env"] = api_key_env
+    if api_key is not None:
+        overrides["api_key"] = api_key
     if dataset_source is not None:
         overrides["dataset_source"] = dataset_source
     if max_samples is not None:
@@ -98,9 +98,7 @@ def replay(
     if source_type == "huggingface":
         if not repo_id:
             raise typer.BadParameter("HuggingFace source requires a repo ID")
-        hf_token: Optional[str] = None
-        if config.dataset.hf_token_env:
-            hf_token = os.environ.get(config.dataset.hf_token_env)
+        hf_token = config.dataset.hf_token or None
         loader = HuggingFaceLoader(repo_id=repo_id, split=config.dataset.split, schema=resolved_schema, token=hf_token)
     elif source_type == "file":
         if not file_path:
