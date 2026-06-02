@@ -27,6 +27,7 @@ class DatasetConfig(BaseModel):
     max_samples: int = 1000
     split: str = "train_sft"
     dataset_schema: str = Field(default="", alias="schema")
+    hf_token_env: str = ""
 
 
 class RequestConfig(BaseModel):
@@ -82,6 +83,7 @@ def _apply_env_overrides(raw: dict) -> dict:
         f"{prefix}DATASET_MAX_SAMPLES": ("dataset", "max_samples"),
         f"{prefix}DATASET_SPLIT": ("dataset", "split"),
         f"{prefix}DATASET_SCHEMA": ("dataset", "dataset_schema"),
+        f"{prefix}HF_TOKEN_ENV": ("dataset", "hf_token_env"),
         f"{prefix}MODEL_OVERRIDE": ("request", "model_override"),
         f"{prefix}MAX_TOKENS": ("request", "max_tokens"),
         f"{prefix}TEMPERATURE": ("request", "temperature"),
@@ -110,6 +112,7 @@ def apply_cli_overrides(config: AppConfig, **overrides) -> AppConfig:
         "max_samples": ("dataset", "max_samples"),
         "split": ("dataset", "split"),
         "schema": ("dataset", "dataset_schema"),
+        "hf_token_env": ("dataset", "hf_token_env"),
         "model_override": ("request", "model_override"),
         "max_tokens": ("request", "max_tokens"),
         "temperature": ("request", "temperature"),

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import os
 import random
+from typing import Optional
 
 from datasets import load_dataset
 
@@ -9,13 +11,17 @@ from trace_replay.models import TraceRequest
 
 
 class HuggingFaceLoader(BaseDatasetLoader):
-    def __init__(self, repo_id: str, split: str, schema: str):
+    def __init__(self, repo_id: str, split: str, schema: str, token: Optional[str] = None):
         self.repo_id = repo_id
         self.split = split
         self.schema = schema
+        self.token = token
 
     def load(self, max_samples: int) -> list[TraceRequest]:
-        ds = load_dataset(self.repo_id, split=self.split, streaming=True)
+        kwargs: dict = {"path": self.repo_id, "split": self.split, "streaming": True}
+        if self.token:
+            kwargs["token"] = self.token
+        ds = load_dataset(**kwargs)
         requests: list[TraceRequest] = []
 
         for row in ds:

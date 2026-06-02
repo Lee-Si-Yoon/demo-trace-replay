@@ -98,7 +98,10 @@ def replay(
     if source_type == "huggingface":
         if not repo_id:
             raise typer.BadParameter("HuggingFace source requires a repo ID")
-        loader = HuggingFaceLoader(repo_id=repo_id, split=config.dataset.split, schema=resolved_schema)
+        hf_token: Optional[str] = None
+        if config.dataset.hf_token_env:
+            hf_token = os.environ.get(config.dataset.hf_token_env)
+        loader = HuggingFaceLoader(repo_id=repo_id, split=config.dataset.split, schema=resolved_schema, token=hf_token)
     elif source_type == "file":
         if not file_path:
             raise typer.BadParameter("File source requires a path")
