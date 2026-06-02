@@ -1,0 +1,24 @@
+[project]
+name = "demo-trace-replay"
+version = "0.1.0"
+description = "Replay LLM request traces against a configurable endpoint for live traffic demos"
+requires-python = ">=3.11"
+dependencies = [
+    "locust>=2.20",
+    "datasets>=2.14",
+    "openai>=1.0",
+    "anthropic>=0.30",
+    "pydantic>=2.0",
+    "pyyaml>=6.0",
+    "typer>=0.9",
+]
+
+[project.scripts]
+trace-replay = "trace_replay.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/trace_replay"]
